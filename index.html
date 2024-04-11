@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Lista de Tarefas</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" sizes="144x144" href="todolist.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="todolist.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="todolist.png">
+    <style>
+        /* Estilos CSS */
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Sobre</a></li>
+                <li><a href="#">Reiniciar Lista</a></li>
+            </ul>
+        </nav>
+    </header>
+    <img src="todolist.png" alt="Imagem">
+    <input type="text" id="taskInput" placeholder="Adicionar tarefa">
+    <button onclick="addTask()">Adicionar</button>
+    <ul id="taskList">
+        <!-- Lista de tarefas será inserida aqui -->
+    </ul>
+
+
+    <script>
+        // Verificar se o Service Worker é suportado pelo navegador
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
+
+        // Função para adicionar uma nova tarefa
+        function addTask() {
+            var taskInput = document.getElementById("taskInput");
+            var taskList = document.getElementById("taskList");
+            var task = taskInput.value;
+
+            if (task.trim() !== "") {
+                var li = document.createElement("li");
+
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.addEventListener("change", function() {
+                    if (this.checked) {
+                        // Faça algo quando a tarefa for marcada como realizada
+                        // Por exemplo: li.style.textDecoration = "line-through";
+                    } else {
+                        // Faça algo quando a tarefa for desmarcada como realizada
+                        // Por exemplo: li.style.textDecoration = "none";
+                    }
+                });
+
+                var span = document.createElement("span");
+                span.textContent = task;
+
+                li.appendChild(checkbox);
+                li.appendChild(span);
+                taskList.appendChild(li);
+
+                taskInput.value = "";
+                saveTask(task);
+            } else {
+                alert("Por favor, insira uma tarefa válida.");
+            }
+        }
+
+        // Função para salvar a tarefa no localStorage
+        function saveTask(task) {
+            var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.push(task);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        // Função para carregar as tarefas do localStorage
+        function loadTasks() {
+            var taskList = document.getElementById("taskList");
+            var tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+            tasks.forEach(task => {
+                var li = document.createElement("li");
+
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.addEventListener("change", function() {
+                    if (this.checked) {
+                        // Faça algo quando a tarefa for marcada como realizada
+                        // Por exemplo: li.style.textDecoration = "line-through";
+                    } else {
+                        // Faça algo quando a tarefa for desmarcada como realizada
+                        // Por exemplo: li.style.textDecoration = "none";
+                    }
+                });
+
+                var span = document.createElement("span");
+                span.textContent = task;
+
+                li.appendChild(checkbox);
+                li.appendChild(span);
+                taskList.appendChild(li);
+            });
+        }
+
+        // Carregar as tarefas ao iniciar a aplicação
+        window.onload = loadTasks;
+    </script>
+</body>
+<footer>
+    Desenvolvido por: Nayra Gabryelle e Thalia Pavão
+</footer>
+</html>
